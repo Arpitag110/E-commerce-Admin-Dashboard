@@ -1,19 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useTransition } from "next/navigation";
+import { useEffect, useState } from "react";
+import { generateNotifications } from "@/lib/notificationHelpers";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch notification count
+  useEffect(() => {
+    async function fetchNotifications() {
+      try {
+        const res = await fetch("/api/notifications");
+        if (res.ok) {
+          const data = await res.json();
+          setNotificationCount(data.count);
+        }
+      } catch (error) {
+        console.error("Failed to fetch notifications:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchNotifications();
+  }, []);
 
   const linkStyle = (path) => ({
     padding: "8px 12px",
     borderRadius: "6px",
-    display: "block",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
     color: pathname === path ? "#fff" : "#aaa",
     background: pathname === path ? "#2563eb" : "transparent",
     textDecoration: "none",
+    position: "relative",
   });
 
   async function handleLogout() {
@@ -59,6 +85,31 @@ export default function Sidebar() {
             <li style={{ marginTop: "8px" }}>
               <Link href="/categories" style={linkStyle("/categories")}>
                 Categories
+              </Link>
+            </li>
+
+            <li style={{ marginTop: "8px" }}>
+              <Link href="/notifications" style={linkStyle("/notifications")}>
+                <span>Notifications</span>
+                {!loading && notificationCount > 0 && (
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "20px",
+                      height: "20px",
+                      background: "#dc2626",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      fontSize: "11px",
+                      fontWeight: "bold",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    {notificationCount > 9 ? "9+" : notificationCount}
+                  </span>
+                )}
               </Link>
             </li>
           </ul>
