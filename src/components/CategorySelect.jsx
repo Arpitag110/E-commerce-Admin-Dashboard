@@ -10,7 +10,8 @@ export default function CategorySelect({ value, onChange }) {
     async function fetchCategories() {
       try {
         const res = await fetch("/api/categories");
-        const data = await res.json();
+        const payload = await res.json();
+        const data = Array.isArray(payload) ? payload : payload.data || [];
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);

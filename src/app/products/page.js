@@ -3,12 +3,20 @@ import Product from "@/models/Product";
 import ProductsTable from "@/components/ProductsTable";
 import Link from "next/link";
 
-export default async function ProductsPage() {
+export default async function ProductsPage({ searchParams }) {
   await connectDB();
 
+  const page = Math.max(1, Number(searchParams?.page) || 1);
+  const limit = Math.min(100, Number(searchParams?.limit) || 20);
+
+  const total = await Product.countDocuments();
   const products = JSON.parse(
     JSON.stringify(
-      await Product.find().populate("category", "name").lean()
+      await Product.find()
+        .populate("category", "name")
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean()
     )
   );
 
@@ -23,7 +31,7 @@ export default async function ProductsPage() {
           + Create New Product
         </Link>
       </div>
-      <ProductsTable products={products} />
+      <ProductsTable products={products} pagination={{ page, limit, total, totalPages: Math.ceil(total / limit) }} />
     </div>
   );
 }

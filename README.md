@@ -378,6 +378,8 @@ Deployment tested on:
 - ✅ Image optimization with Cloudinary transformations
 - ✅ Lean MongoDB queries with `.lean()`
 - ✅ Efficient pagination (if implemented)
+- ✅ Server-side pagination for Products and Categories (query params `?page=&limit=`)
+- ✅ Audit logging for create/update/delete actions (stored in `src/models/AuditLog.js`)
 - ✅ Client-side filtering for responsive UX
 
 ---

@@ -3,11 +3,15 @@ import Category from "@/models/Category";
 import CategoriesTable from "@/components/CategoriesTable";
 import Link from "next/link";
 
-export default async function CategoriesPage() {
+export default async function CategoriesPage({ searchParams }) {
   await connectDB();
 
+  const page = Math.max(1, Number(searchParams?.page) || 1);
+  const limit = Math.min(100, Number(searchParams?.limit) || 20);
+
+  const total = await Category.countDocuments();
   const categories = JSON.parse(
-    JSON.stringify(await Category.find().sort({ name: 1 }).lean())
+    JSON.stringify(await Category.find().sort({ name: 1 }).skip((page - 1) * limit).limit(limit).lean())
   );
 
   return (
@@ -21,7 +25,7 @@ export default async function CategoriesPage() {
           + Create New Category
         </Link>
       </div>
-      <CategoriesTable categories={categories} />
+      <CategoriesTable categories={categories} pagination={{ page, limit, total, totalPages: Math.ceil(total / limit) }} />
     </div>
   );
 }

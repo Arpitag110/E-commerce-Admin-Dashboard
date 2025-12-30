@@ -4,19 +4,23 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import DeleteButton from "./DeleteButton";
+import { useRouter } from "next/navigation";
 
-export default function ProductsTable({ products }) {
+export default function ProductsTable({ products, pagination }) {
   const [search, setSearch] = useState("");
   const [stockFilter, setStockFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortBy, setSortBy] = useState("none");
   const [categories, setCategories] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchCategories() {
       try {
         const res = await fetch("/api/categories");
-        const data = await res.json();
+        const payload = await res.json();
+        // API may return { data, total, page } or an array
+        const data = Array.isArray(payload) ? payload : payload.data || [];
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
@@ -51,6 +55,13 @@ export default function ProductsTable({ products }) {
       if (sortBy === "stock-desc") return b.stock - a.stock;
       return 0;
     });
+
+  const goToPage = (p) => {
+    const search = new URLSearchParams(window.location.search);
+    search.set("page", p);
+    search.set("limit", pagination?.limit || 20);
+    router.push(`${window.location.pathname}?${search.toString()}`);
+  };
 
   return (
     <div className="space-y-4">
@@ -205,6 +216,32 @@ export default function ProductsTable({ products }) {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {pagination && (
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-zinc-400">
+            Page {pagination.page} of {pagination.totalPages} — {pagination.total} total
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => goToPage(Math.max(1, pagination.page - 1))}
+              disabled={pagination.page <= 1}
+              className="px-3 py-1 bg-zinc-800 text-white rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <button
+              onClick={() => goToPage(Math.min(pagination.totalPages, pagination.page + 1))}
+              disabled={pagination.page >= pagination.totalPages}
+              className="px-3 py-1 bg-zinc-800 text-white rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

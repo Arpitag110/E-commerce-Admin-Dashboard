@@ -3,13 +3,22 @@
 import { useState } from "react";
 import Link from "next/link";
 import DeleteButton from "./DeleteCategoryButton";
+import { useRouter } from "next/navigation";
 
-export default function CategoriesTable({ categories }) {
+export default function CategoriesTable({ categories, pagination }) {
   const [search, setSearch] = useState("");
+  const router = useRouter();
 
   const filteredCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  function goToPage(p) {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("page", p);
+    searchParams.set("limit", pagination?.limit || 20);
+    router.push(`${window.location.pathname}?${searchParams.toString()}`);
+  }
 
   return (
     <div className="space-y-4">
@@ -80,6 +89,18 @@ export default function CategoriesTable({ categories }) {
           </tbody>
         </table>
       </div>
+
+      {pagination && (
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-zinc-400">
+            Page {pagination.page} of {pagination.totalPages} — {pagination.total} total
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => goToPage(Math.max(1, pagination.page - 1))} disabled={pagination.page <= 1} className="px-3 py-1 bg-zinc-800 text-white rounded disabled:opacity-50">Prev</button>
+            <button onClick={() => goToPage(Math.min(pagination.totalPages, pagination.page + 1))} disabled={pagination.page >= pagination.totalPages} className="px-3 py-1 bg-zinc-800 text-white rounded disabled:opacity-50">Next</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
