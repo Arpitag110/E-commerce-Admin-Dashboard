@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "@/components/ImageUpload";
 import CategorySelect from "@/components/CategorySelect";
+import { useToast } from "@/components/ToastProvider";
 
 export default function NewProductPage() {
   const router = useRouter();
+  const { addToast } = useToast();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -31,17 +33,22 @@ export default function NewProductPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/products");
-        router.refresh();
+        addToast(`Product "${name}" created successfully!`, "success");
+        setTimeout(() => {
+          router.push("/products");
+          router.refresh();
+        }, 500);
       } else {
         if (data?.errors && Array.isArray(data.errors)) {
           setError(data.errors.map((e) => e.message).join(", "));
         } else {
           setError(data?.message || "Failed to create product");
         }
+        addToast("Failed to create product", "error");
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      addToast("An unexpected error occurred", "error");
       console.error("Create product error:", err);
     } finally {
       setLoading(false);

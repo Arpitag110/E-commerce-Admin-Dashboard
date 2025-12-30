@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
 import CategorySelect from "./CategorySelect";
+import { useToast } from "./ToastProvider";
 
 export default function EditProductForm({ product }) {
   const router = useRouter();
+  const { addToast } = useToast();
 
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
@@ -26,10 +28,13 @@ export default function EditProductForm({ product }) {
     });
 
     if (res.ok) {
-      router.push("/products");
-      router.refresh();
+      addToast(`Product "${name}" updated successfully!`, "success");
+      setTimeout(() => {
+        router.push("/products");
+        router.refresh();
+      }, 500);
     } else {
-      alert("Failed to update product");
+      addToast("Failed to update product", "error");
     }
 
     setLoading(false);

@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ToastProvider";
 
 export default function NewCategoryPage() {
   const router = useRouter();
+  const { addToast } = useToast();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -26,8 +28,11 @@ export default function NewCategoryPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/categories");
-        router.refresh();
+        addToast(`Category "${name}" created successfully!`, "success");
+        setTimeout(() => {
+          router.push("/categories");
+          router.refresh();
+        }, 500);
       } else {
         // Show more detailed error message
         if (data.errors && Array.isArray(data.errors)) {
@@ -36,9 +41,11 @@ export default function NewCategoryPage() {
         } else {
           setError(data.message || "Failed to create category");
         }
+        addToast("Failed to create category", "error");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
+      addToast("An error occurred", "error");
     } finally {
       setLoading(false);
     }

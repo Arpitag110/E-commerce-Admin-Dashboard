@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthWrapper from "../components/AuthWrapper";
+import { ToastProvider } from "../components/ToastProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +22,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <AuthWrapper>{children}</AuthWrapper>
+        <ToastProvider>
+          <AuthWrapper>{children}</AuthWrapper>
+        </ToastProvider>
       </body>
     </html>
   );
