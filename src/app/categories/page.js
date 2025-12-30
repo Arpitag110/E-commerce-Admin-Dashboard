@@ -3,11 +3,15 @@ import Category from "@/models/Category";
 import CategoriesTable from "@/components/CategoriesTable";
 import Link from "next/link";
 
+
 export default async function CategoriesPage({ searchParams }) {
   await connectDB();
 
-  const page = Math.max(1, Number(searchParams?.page) || 1);
-  const limit = Math.min(100, Number(searchParams?.limit) || 20);
+  // `searchParams` may be a Promise in some Next.js runtime versions.
+  const sp = typeof searchParams?.then === "function" ? await searchParams : searchParams || {};
+
+  const page = Math.max(1, Number(sp?.page) || 1);
+  const limit = Math.min(100, Number(sp?.limit) || 20);
 
   const total = await Category.countDocuments();
   const categories = JSON.parse(

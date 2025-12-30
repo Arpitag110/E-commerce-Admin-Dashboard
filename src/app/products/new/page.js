@@ -14,25 +14,38 @@ export default function NewProductPage() {
   const [imageUrl, setImageUrl] = useState(null);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
     setLoading(true);
 
-    const res = await fetch("/api/products", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, price, stock, imageUrl, category }),
-    });
+    try {
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price, stock, imageUrl, category }),
+      });
 
-    if (res.ok) {
-      router.push("/products");
-      router.refresh();
-    } else {
-      alert("Failed to create product");
+      const data = await res.json();
+
+      if (res.ok) {
+        router.push("/products");
+        router.refresh();
+      } else {
+        if (data?.errors && Array.isArray(data.errors)) {
+          setError(data.errors.map((e) => e.message).join(", "));
+        } else {
+          setError(data?.message || "Failed to create product");
+        }
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Create product error:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (
@@ -42,6 +55,11 @@ export default function NewProductPage() {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="bg-red-600/20 border border-red-600 text-red-400 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
         {/* Product Name */}
         <div>
           <label className="block text-sm mb-1 text-zinc-300">

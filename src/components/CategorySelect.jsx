@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export default function CategorySelect({ value, onChange }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchCategories() {
@@ -15,6 +16,7 @@ export default function CategorySelect({ value, onChange }) {
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
+        setError("Failed to load categories");
       } finally {
         setLoading(false);
       }
@@ -40,6 +42,9 @@ export default function CategorySelect({ value, onChange }) {
           </option>
         ))}
       </select>
+      {error && (
+        <p className="mt-2 text-sm text-red-400">{error}</p>
+      )}
     </div>
   );
 }

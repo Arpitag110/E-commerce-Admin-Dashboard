@@ -6,8 +6,12 @@ import Link from "next/link";
 export default async function ProductsPage({ searchParams }) {
   await connectDB();
 
-  const page = Math.max(1, Number(searchParams?.page) || 1);
-  const limit = Math.min(100, Number(searchParams?.limit) || 20);
+  // `searchParams` may be a Promise in some Next.js runtime versions.
+  // Support both Promise and plain object forms.
+  const sp = typeof searchParams?.then === "function" ? await searchParams : searchParams || {};
+
+  const page = Math.max(1, Number(sp?.page) || 1);
+  const limit = Math.min(100, Number(sp?.limit) || 20);
 
   const total = await Product.countDocuments();
   const products = JSON.parse(
