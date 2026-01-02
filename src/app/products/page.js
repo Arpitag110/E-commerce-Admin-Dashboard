@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/db";
 import Product from "@/models/Product";
 import ProductsTable from "@/components/ProductsTable";
 import Link from "next/link";
+import "@/models/Category";
 
 export default async function ProductsPage({ searchParams }) {
   await connectDB();
