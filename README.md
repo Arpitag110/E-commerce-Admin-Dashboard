@@ -1,17 +1,19 @@
-#E-commerce Product Management Dashboard (SSR)
+# E-commerce Product Management Dashboard (SSR)
 
 A server-side rendered admin dashboard for managing e-commerce products, inventory, and categories.
 Built with Next.js (App Router), MongoDB, and Tailwind CSS, and deployed on Vercel.
 
-##Live Demo: https://e-commerce-admin-dashboard-xlfp.vercel.app/
-##Video Demo: https://drive.google.com/file/d/1V7bdbRC13NkVEvLt80-v-UuVVWzF5167/view?usp=drivesdk
+## Live Demo:
+ https://e-commerce-admin-dashboard-xlfp.vercel.app/
+## Video Demo:
+ https://drive.google.com/file/d/1V7bdbRC13NkVEvLt80-v-UuVVWzF5167/view?usp=drivesdk
 
-#Features
+# Features
 
-Authentication with protected admin routes.
-Product management with full CRUD functionality.
-Search, filter, sort, and server-side pagination.
-Category management.
+Authentication with protected admin routes
+Product management with full CRUD functionality
+Search, filter, sort, and server-side pagination
+Category management
 Smart notification system:
 Low stock and out-of-stock alerts
 Uncategorized products
@@ -23,7 +25,7 @@ Audit logs for admin actions (create, update, delete)
 Responsive dark-themed UI using Tailwind CSS
 Server-side rendering for improved performance and SEO
 
-#Tech Stack
+# Tech Stack
 
 Next.js (App Router) for Full-stack SSR framework
 React for UI components
@@ -34,19 +36,19 @@ Recharts for Data visualization
 Zod for Schema validation
 Cloudinary for Image storage
 
-#Getting Started
+# Getting Started
 
-##Prerequisites
+## Prerequisites
 Node.js 18+
 MongoDB (local or Atlas)
 Cloudinary account
 
-##Installation
+## Installation
 git clone <repository-url>
 cd ecommerce-admin
 npm install
 
-##Environment Variables
+## Environment Variables
 Create a .env.local file in the root directory:
 
 MONGODB_URI=your_mongodb_connection_string
@@ -62,11 +64,11 @@ npm run dev
 Open http://localhost:3000
  in your browser.
 
-##Default Admin Login
+## Default Admin Login
 Username: admin
 Password: admin123
 
-#Project Structure
+# Project Structure
 
 src/
 ├── app/
@@ -77,21 +79,21 @@ src/
 │   ├── notifications/    # Alerts
 ├── components/           # Reusable UI components
 ├── models/               # Database schemas
-├── lib/                  # Database, auth, helpers
+├── lib/                  # Database, auth, helpers, validation
 ├── proxy.js
 
-#Key Functionality
+# Key Functionality
 
-##Pagination:
+## Pagination:
 Server-side pagination for products and categories
 Query-based pagination using ?page= and ?limit=
 
-##Audit Logs:
+## Audit Logs:
 Tracks admin actions for products and categories
 Logs create, update, and delete operations
 Stores timestamps for accountability and debugging
 
-##Notification System:
+## Notification System:
 Automatically generated on the server
 Alerts for:
 Low or zero stock
@@ -99,7 +101,7 @@ Missing categories
 Missing images
 Displayed via sidebar badge and notifications page
 
-#Security Considerations
+# Security Considerations
 
 Environment variables for sensitive credentials
 Server-side authentication
@@ -107,25 +109,24 @@ Zod-based input validation
 Protected API routes
 Image size and file-type validation
 
-#Deployment
+# Deployment
 
 Deployed on Vercel
 Environment variables configured in Vercel dashboard
 MongoDB Atlas used as the production database
 Server-side rendering enabled
-
 Production Build
 npm run build
 npm start
 
-#Performance Optimizations
+# Performance Optimizations
 
 Server-side rendering for faster initial load
 Lean MongoDB queries
 Optimized image delivery via Cloudinary
 Client-side filtering for better UX
 
-#Future Enhancements
+# Future Enhancements
 
 Role-based access control
 Export inventory and audit reports
